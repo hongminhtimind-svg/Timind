@@ -9,7 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      contents: read # Thêm quyền đọc nội dung kho
     steps:
+      - name: Checkout repository # Bước mới để fix lỗi "not a git repository"
+        uses: actions/checkout@v4
+
       - name: Create BE, FE, and QC Tasks
         run: |
           gh issue create --title "[BE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::BE"
