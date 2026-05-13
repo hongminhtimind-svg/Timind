@@ -9,15 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      contents: read # Thêm quyền đọc nội dung kho
     steps:
-      - name: Checkout repository # Bước mới để fix lỗi "not a git repository"
-        uses: actions/checkout@v4
-
       - name: Create BE, FE, and QC Tasks
         run: |
-          gh issue create --title "[BE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::BE"
-          gh issue create --title "[FE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::FE"
-          gh issue create --title "[QC] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::QC"
+          # Chúng ta thêm tham số --repo để chỉ định đích danh kho Timind
+          gh issue create --title "[BE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::BE" --repo ${{ github.repository }}
+          gh issue create --title "[FE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::FE" --repo ${{ github.repository }}
+          gh issue create --title "[QC] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::QC" --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
