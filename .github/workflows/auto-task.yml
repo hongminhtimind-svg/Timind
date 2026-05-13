@@ -7,14 +7,39 @@ jobs:
   create-subtasks:
     if: github.event.label.name == 'kind::story'
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
-      - name: Create BE, FE, and QC Tasks
-        run: |
-          # Chúng ta thêm tham số --repo để chỉ định đích danh kho Timind
-          gh issue create --title "[BE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::BE" --repo ${{ github.repository }}
-          gh issue create --title "[FE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::FE" --repo ${{ github.repository }}
-          gh issue create --title "[QC] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::QC" --repo ${{ github.repository }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create BE Task
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[BE] ${context.payload.issue.title}`,
+              body: `Thuộc Story: #${context.payload.issue.number}`,
+              labels: ['team::BE']
+            });
+
+      - name: Create FE Task
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[FE] ${context.payload.issue.title}`,
+              body: `Thuộc Story: #${context.payload.issue.number}`,
+              labels: ['team::FE']
+            });
+
+      - name: Create QC Task
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[QC] ${context.payload.issue.title}`,
+              body: `Thuộc Story: #${context.payload.issue.number}`,
+              labels: ['team::QC']
+            });
