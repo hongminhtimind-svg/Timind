@@ -1,0 +1,19 @@
+name: Auto Create Tasks for BA
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  create-subtasks:
+    if: github.event.label.name == 'kind::story'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create BE, FE, and QC Tasks
+        run: |
+          gh issue create --title "[BE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::BE"
+          gh issue create --title "[FE] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::FE"
+          gh issue create --title "[QC] ${{ github.event.issue.title }}" --body "Thuộc Story: #${{ github.event.issue.number }}" --label "team::QC"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
